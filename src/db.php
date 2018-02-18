@@ -6,6 +6,7 @@
  * Time: 18:57
  */
 
+require_once 'DbTable.php';
 
 class DB extends PDO
 {
@@ -38,6 +39,7 @@ class DB extends PDO
         $i=0;
         foreach ($matches as $match){
             $params[$match] = $args[$i];
+            $i++;
         }
 
         $stm = $this->prepare($query);
@@ -52,6 +54,7 @@ class DB extends PDO
         $i=0;
         foreach ($matches as $match){
             $params[$match] = $args[$i];
+            $i++;
         }
 
         $stm = $this->prepare($query);
@@ -66,28 +69,21 @@ class DB extends PDO
         $i=0;
         foreach ($matches as $match){
             $params[$match] = $args[$i];
+            $i++;
         }
 
         $stm = $this->prepare($query);
         $stm->execute($params);
     }
 
-    public function insertNewUser($name, $password, $email)
+    public function table(string $tblName)
     {
-        $query = 'INSERT INTO `user`(`name`, `password`, `email`) VALUES (:name, :password, :email)';
-        $args = [$name, $password, $email];
-        $this->insert($query, $args);  //new user
-        $userId = $this->lastInsertId();
+        $tableDescription = [];
+        $query = 'DESCRIBE ' . $tblName;
 
-        $query = 'INSERT INTO `workgroup`(`name`, `expandable`) VALUES (:name, :expandable)';
-        $args = [$name, 0]; //not expandable
-        $this->insert($query, $args); //default wkgroup - only user
-        $workgroupId = $this->lastInsertId();
+        $tableDescription = $this->select($query, []);
 
-        $query = 'INSERT INTO `membership`(`workgroup_id`, `user_id`, `pivilegelvl`) VALUES (:workgroup_id, :user_id, 0)'; // pivilegelvl 0-best; 3-worst
-        $args = [$workgroupId, $userId];
-        $this->insert($query, $args); //membership for the wkgroup
+        return new DbTable($tableDescription, $tblName, $this);
     }
 
-    
 }

@@ -12,9 +12,25 @@ $config = [
     ],
     'db' => [
         'host' => 'localhost',
-        'dbname' => 'todos-api',
+        'dbname' => 'pokedex-api',
         'username' => 'root',
         'password' => '',
         'driver' => 'mysql'
     ]
 ];
+
+function getConf(){
+    $config = [
+        'settings' => [
+            'displayErrorDetails' => true,
+        ],
+        'db' => [
+            'host' => 'localhost',
+            'dbname' => 'pokedex-api',
+            'username' => 'root',
+            'password' => '',
+            'driver' => 'mysql'
+        ]
+    ];
+    return $config;
+}
